@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id         String             @id @default(uuid())
+  sku        String             @unique
+  name       String
+  pricePence Int
+  active     Boolean            @default(true)
+  promotions PromotionProduct[]
+}
+
+model Promotion {
+  id            String             @id @default(uuid())
+  code          String             @unique
+  name          String
+  type          String
+  active        Boolean            @default(true)
+  priority      Int                @default(0)
+  percentageOff Int?
+  products      PromotionProduct[]
+  coupons       Coupon[]
+}
+
+model PromotionProduct {
+  promotionId String
+  productId   String
+
+  promotion Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([promotionId, productId])
+  @@index([productId])
+}
+
+model Coupon {
+  id          String    @id @default(uuid())
+  code        String    @unique
+  promotionId String
+  active      Boolean   @default(true)
+
+  promotion Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+
+  @@index([promotionId])
+}
