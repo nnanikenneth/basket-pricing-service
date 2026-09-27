@@ -443,7 +443,8 @@ Rate-limit counters are stored in process memory and are therefore local to each
 Authentication, inventory, checkout, payments, coupon usage limits, backups, and production deployment are outside the scope of this service.
 
 ## AI-assisted development tools
-The solution, including all technical decisions, was independently designed, implemented and validated by the author. Github Copilot was used selectively as a development aid during implementation.
+
+The solution, including all technical decisions, was independently designed, implemented and validated by the author. Github Copilot was used selectively to help review design decisions, explore edge cases, refine tests, and improve documentation during implementation.
 
 ## Additional documentation
 
