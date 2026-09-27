@@ -1,0 +1,23 @@
+# Dependencies and generated output
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Local environment settings
+.env
+.env.*
+!.env.example
+
+# SQLite databases and journal files
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+
+# Logs and operating-system metadata
+*.log
+.DS_Store
+Thumbs.db

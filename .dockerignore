@@ -1,0 +1,26 @@
+# Install dependencies and compile inside the image.
+**/node_modules
+**/dist
+**/coverage
+*.tsbuildinfo
+
+# Local configuration and credentials.
+**/.env
+**/.env.*
+!.env.example
+**/.npmrc
+
+# Local SQLite databases and journal files.
+**/*.db
+**/*.db-*
+**/*.sqlite
+**/*.sqlite-*
+**/*.sqlite3
+**/*.sqlite3-*
+
+# Repository metadata, editor settings, and logs.
+.git
+.vscode
+.idea
+**/.DS_Store
+**/*.log

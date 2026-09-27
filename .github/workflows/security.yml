@@ -1,0 +1,71 @@
+name: Security checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # Weekly, Monday at 07:17 UTC.
+    - cron: "17 7 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependencies:
+    name: Dependency vulnerability scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit
+
+      - name: Audit production and development dependencies
+        run: npm audit --audit-level=high
+
+  image:
+    name: Container image vulnerability scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Build runtime image
+        run: >
+          docker build
+          --pull
+          --target runtime
+          --tag basket-pricing-api:security
+          .
+
+      - name: Scan runtime image
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: "image"
+          image-ref: "basket-pricing-api:security"
+          scanners: "vuln"
+          vuln-type: "os,library"
+          format: "table"
+          severity: "HIGH,CRITICAL"
+          ignore-unfixed: "false"
+          exit-code: "1"

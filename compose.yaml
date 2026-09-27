@@ -1,0 +1,21 @@
+services:
+  api:
+    build:
+      context: .
+      target: runtime
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      NODE_ENV: production
+      HOST: "0.0.0.0"
+      PORT: "3000"
+      LOG_LEVEL: info
+      DATABASE_URL: "file:/data/basket.db"
+      SEED_DATABASE: "true"
+    volumes:
+      - basket-data:/data
+    init: true
+    stop_grace_period: 15s
+
+volumes:
+  basket-data:
