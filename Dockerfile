@@ -17,7 +17,6 @@ COPY tsconfig.json tsconfig.build.json ./
 COPY src ./src
 RUN npm run build
 
-
 RUN npm pkg set dependencies.prisma="$(node -p 'require("./package.json").devDependencies.prisma')" \
     && npm pkg delete devDependencies.prisma \
     && npm prune --omit=dev --ignore-scripts
@@ -37,7 +36,12 @@ COPY prisma/schema.prisma ./prisma/schema.prisma
 COPY prisma/migrations ./prisma/migrations
 COPY scripts/entrypoint.sh ./scripts/entrypoint.sh
 
-RUN mkdir -p /data && chown node:node /data
+RUN rm -rf \
+    /usr/local/lib/node_modules/npm \
+    /usr/local/bin/npm \
+    /usr/local/bin/npx \
+    && mkdir -p /data \
+    && chown node:node /data
 
 USER node
 
